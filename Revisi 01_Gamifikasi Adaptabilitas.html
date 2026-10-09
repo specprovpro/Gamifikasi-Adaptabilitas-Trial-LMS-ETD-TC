@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Gamifikasi Adaptabilitas: Berselancar di Atas Perubahan</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#eaf6ff;--mut:#9cc3dc;--sea:#12c2c9;--sun:#ffb347;--deep:#06223d}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;overflow:hidden;background:#041525;color:var(--ink);font-family:'Plus Jakarta Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif}
+body{display:flex;align-items:center;justify-content:center}
+#stage{position:relative;width:100vw;height:100%;font-size:13px;overflow:hidden;background:linear-gradient(180deg,#0a2a4d,#06223d 60%,#041525);user-select:none;-webkit-user-select:none;touch-action:manipulation;box-shadow:0 0 60px rgba(0,0,0,.6)}
+.screen{position:absolute;inset:0;display:none;flex-direction:column;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+.screen.on{display:flex}
+/* WELCOME */
+#welcome{padding:2.2em 1.7em 1.6em;overflow-y:auto;background:linear-gradient(180deg,#ff9a5a 0,#ffc27a 14%,#0a2a4d 38%,#06223d)}
+.hero{position:relative;height:10em;flex:0 0 auto;margin-bottom:.8em;overflow:hidden;border-radius:1.2em}
+.sunb{position:absolute;left:50%;top:1em;margin-left:-2.4em;width:4.8em;height:4.8em;border-radius:50%;background:radial-gradient(#fff3c4,#ffb347);box-shadow:0 0 3em #ffb347}
+.wv{position:absolute;left:-10%;width:120%;height:6em;border-radius:45% 55% 0 0/100% 100% 0 0;animation:sw 4s ease-in-out infinite alternate}
+.w1{bottom:-1.4em;background:#12c2c9;opacity:.55}
+.w2{bottom:-2.4em;background:#0d8fb8;animation-duration:3s;animation-delay:-1s}
+.w3{bottom:-3.2em;background:#0a5e94;animation-duration:5s}
+@keyframes sw{from{transform:translateX(-5%) translateY(0)}to{transform:translateX(5%) translateY(-.8em)}}
+.surf{position:absolute;left:50%;margin-left:-1.4em;bottom:2.2em;font-size:2.8em;animation:bob 3s ease-in-out infinite;z-index:3}
+@keyframes bob{0%,100%{transform:translateY(0) rotate(-8deg)}50%{transform:translateY(-.35em) rotate(8deg)}}
+#welcome h1{margin:.1em 0 .2em;font-size:2em;line-height:1.08;font-weight:800;letter-spacing:-.02em;text-align:center}
+.sub{margin:0 0 .9em;text-align:center;color:var(--mut);font-size:.92em}
+.t{margin:0 0 .8em;font-size:.9em;line-height:1.5;color:#d3e8f7}
+.mission{background:rgba(18,194,201,.12);border:.08em solid rgba(18,194,201,.4);border-radius:.9em;padding:.75em .9em;font-size:.86em;line-height:1.5;color:#dff8fa;margin-bottom:1em}
+.mission li{margin:.25em 0}.mission ul{margin:.4em 0 0;padding-left:1.2em}
+.field label{display:block;font-size:.82em;font-weight:600;color:var(--mut);margin-bottom:.35em}
+.field input{width:100%;padding:.85em 1em;border-radius:.8em;border:.09em solid rgba(255,255,255,.22);background:rgba(4,21,37,.8);color:#fff;font:inherit;font-size:1em;outline:none}
+.field input:focus{border-color:var(--sea);box-shadow:0 0 0 .2em rgba(18,194,201,.25)}
+.btn{margin-top:.9em;width:100%;padding:.95em 1em;border:0;border-radius:.9em;font:inherit;font-weight:800;font-size:1.02em;color:#032033;background:linear-gradient(180deg,#5eead4,#12c2c9);box-shadow:0 .35em 0 #0a8089,0 .8em 1.2em rgba(0,0,0,.35);cursor:pointer;transition:transform .12s,box-shadow .12s}
+.btn:active:not(:disabled){transform:translateY(.25em);box-shadow:0 .1em 0 #0a8089,0 .3em .6em rgba(0,0,0,.35)}
+.btn:disabled{background:#3a5568;color:#86a0b3;box-shadow:0 .35em 0 #2a3f4f;cursor:not-allowed}
+.btn.alt{background:rgba(255,255,255,.1);color:#dff8fa;box-shadow:none;border:.08em solid rgba(255,255,255,.22)}
+/* GAME */
+.topbar{display:flex;align-items:center;gap:.6em;padding:.7em .9em .5em;flex:0 0 auto;z-index:5}
+.brand{flex:1;min-width:0}.brand b{display:block;font-size:.98em;font-weight:800}
+.brand small{display:block;font-size:.72em;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pill{background:rgba(255,255,255,.12);border-radius:2em;padding:.35em .8em;font-weight:800;font-size:.95em}
+.pill span{color:var(--sun)}
+.progress{height:.35em;background:rgba(255,255,255,.12);flex:0 0 auto;z-index:5}
+#bar{display:block;height:100%;width:0;background:linear-gradient(90deg,#5eead4,#ffb347,#ff6b6b)}
+#cv{position:absolute;left:0;top:0;width:100%;height:100%;touch-action:none}
+.hud{position:absolute;left:1em;right:1em;bottom:calc(1.3em + env(safe-area-inset-bottom,0px));z-index:5;pointer-events:none}
+.mrow{display:flex;justify-content:space-between;font-size:.78em;font-weight:700;color:#dff8fa;margin-bottom:.35em}
+.meter{height:1em;border-radius:1em;background:rgba(4,21,37,.7);border:.08em solid rgba(255,255,255,.25);overflow:hidden}
+#mt{height:100%;width:0;background:linear-gradient(90deg,#5eead4,#ffb347,#ff6b6b);transition:width .1s}
+.hint{text-align:center;font-size:.78em;color:#dff8fa;margin-top:.6em;text-shadow:0 .1em .4em #000}
+#bn{position:absolute;left:1em;right:1em;top:7em;z-index:6;text-align:center;font-weight:800;font-size:1.25em;line-height:1.25;padding:.7em .8em;border-radius:1em;background:rgba(4,21,37,.78);border:.08em solid rgba(255,179,71,.6);opacity:0;transform:translateY(-1em);transition:.35s;pointer-events:none}
+#bn.show{opacity:1;transform:none}
+#bn small{display:block;font-size:.62em;font-weight:600;color:var(--mut);margin-top:.3em}
+#intro{position:absolute;inset:0;z-index:20;background:rgba(3,16,30,.82);display:flex;flex-direction:column;justify-content:center;padding:2em 1.7em}
+#intro h2{margin:0 0 .5em;font-size:1.6em;text-align:center}
+.step{display:flex;gap:.8em;align-items:center;background:rgba(255,255,255,.08);border-radius:.9em;padding:.7em .9em;margin-bottom:.6em;font-size:.88em;line-height:1.4}
+.step i{font-style:normal;font-size:1.8em}
+/* DEBRIEF */
+#debrief{padding:2em 1.5em 1.5em;overflow-y:auto;align-items:stretch;background:linear-gradient(180deg,#0e4a6e,#06223d 35%)}
+.trophy{font-size:3.2em;text-align:center}
+#debrief h2{margin:.1em 0 .2em;text-align:center;font-size:1.55em;line-height:1.15}
+.lead{text-align:center;color:var(--mut);font-size:.9em;margin:0 0 1em}
+.stats{display:flex;gap:.6em;margin-bottom:.9em}
+.stat{flex:1;background:rgba(255,255,255,.09);border-radius:.9em;padding:.7em .3em;text-align:center}
+.stat b{display:block;font-size:1.5em;color:var(--sun)}.stat small{font-size:.7em;color:var(--mut)}
+.box{background:rgba(255,255,255,.08);border-radius:1em;padding:.9em;margin-bottom:.8em;font-size:.88em;line-height:1.5}
+.box h3{margin:0 0 .5em;font-size:.95em;color:#5eead4}
+.ph{margin-bottom:.8em}.ph:last-child{margin-bottom:0}
+.ph b{display:flex;justify-content:space-between;font-size:.95em}
+.ph .tr{height:.5em;border-radius:1em;background:rgba(255,255,255,.12);margin:.3em 0;overflow:hidden}
+.ph .tr i{display:block;height:100%;background:linear-gradient(90deg,#5eead4,#ffb347)}
+.ph p{margin:0;color:#cfe5f3;font-size:.92em}
+</style>
+</head>
+<body>
+<div id="stage">
+<!-- BRIEFING -->
+<section id="welcome" class="screen on">
+  <div class="hero"><div class="sunb"></div><div class="surf">🏄</div><div class="wv w1"></div><div class="wv w2"></div><div class="wv w3"></div></div>
+  <h1>Berselancar <br>di Atas Perubahan</h1>
+  <p class="t">Halo Bapak/Ibu, perubahan itu seperti ombak. Datang tanpa permisi dan ritmenya bisa berubah kapan saja. Lewat gamifikasi ini, Bapak/Ibu akan merasakan sendiri bedanya menghadapi perubahan dengan <b>dilawan</b> atau <b>menyesuaikan diri</b>.</p>
+  <div class="mission"><strong>Petunjuk Gamifikasi:</strong>
+    <ul><li><b>Tahan layar</b> untuk naik, <b>lepaskan</b> untuk turun.</li><li>Jaga papan selancar tetap di puncak ombak agar tetap <b>selaras</b>.</li></ul></div>
+  <div class="field"><label for="pn">Nama Bapak/Ibu</label><input id="pn" type="text" placeholder="Ketik nama Bapak/Ibu di sini..." autocomplete="off" maxlength="40"></div>
+  <button id="go" class="btn" disabled>Mulai Gamifikasi</button>
+</section>
+<!-- GAME -->
+<section id="game" class="screen">
+  <div class="topbar"><div class="brand"><b id="ph">Fase 1</b><small id="who"></small></div><div class="pill"><span id="tl">45</span> dtk</div></div>
+  <div class="progress"><i id="bar"></i></div>
+  <canvas id="cv"></canvas>
+  <div id="bn"></div>
+  <div class="hud"><div class="mrow"><span id="st">Selaras 🌊</span><span>Risiko tenggelam</span></div><div class="meter"><i id="mt"></i></div><div class="hint">Tahan = naik &nbsp;•&nbsp; Lepas = turun</div></div>
+  <div id="intro"><h2>Siap berselancar? 🌊</h2>
+    <div class="step"><i>👆</i><span><b>Tahan layar</b> agar papan naik, <b>lepas</b> agar turun.</span></div>
+    <div class="step"><i>🎯</i><span>Tetap di <b>puncak ombak</b>. Terlalu jauh dari irama, meter tenggelam penuh dan Anda <b>wipeout</b>.</span></div>
+    <div class="step"><i>⚡</i><span>Ritme ombak akan <b>berubah mendadak</b>. Itu bagian dari permainan.</span></div>
+    <button id="ready" class="btn">Ayo Berselancar!</button></div>
+</section>
+<!-- DEBRIEFING -->
+<section id="debrief" class="screen">
+  <div class="trophy" id="tro">🏄</div>
+  <h2><span id="rk"></span><br><small style="font-size:.6em;font-weight:600;color:#9cc3dc">Bapak/Ibu <span id="dn"></span></small></h2>
+  <p class="lead" id="rl"></p>
+  <div class="stats"><div class="stat"><b id="sf">0%</b><small>Selaras dengan ombak</small></div><div class="stat"><b id="sw">0</b><small>Wipeout</small></div><div class="stat"><b id="ss">0s</b><small>Selaras terlama</small></div></div>
+  <div class="box"><h3>Kesimpulan Gamifikasi</h3>
+    <p style="margin:0 0 .6em">Perubahan itu seperti ombak. Tidak bisa dihentikan, tetapi bisa dibaca. Semakin kuat kita melawan, semakin cepat kita lelah dan tenggelam.</p>
+    <p style="margin:0;color:#7ff0e0">Adaptif bukan berarti pasrah. Adaptif berarti mengamati irama, menyesuaikan gerak, lalu tetap memegang arah. Itulah cara leader berselancar di atas perubahan, bukan tenggelam olehnya.</p></div>
+  <div class="box" id="rc"><h3>Rangkuman Tiga Fase Perubahan</h3></div>
+  <button id="again" class="btn alt">Ulang Gamifikasi</button>
+</section>
+</div>
+<script>
+const $=i=>document.getElementById(i),stage=$('stage');
+function fit(){const a=document.activeElement;if(a&&a.tagName==='INPUT')return;const vw=innerWidth,vh=innerHeight,w=Math.min(vw,vh*9/16);stage.style.width=w+'px';stage.style.height=vh+'px';stage.style.fontSize=(w/28)+'px';size()}
+addEventListener('resize',fit);document.addEventListener('focusout',()=>setTimeout(fit,250));
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.toggle('on',s.id===id))}
+const DUR=45,PD=15;
+const PH=[
+ {n:'Ombak Tenang',lam:1.3,om:1.1,A:.07,h2:0,msg:'Fase 1: Ombak Tenang',sub:'Amati dulu iramanya.',rec:'Saat situasi stabil, luangkan waktu mengamati irama. Pemahaman awal membuat kita siap saat perubahan datang.'},
+ {n:'Perubahan Mendadak',lam:.8,om:2.1,A:.11,h2:.25,msg:'⚡ PERUBAHAN! Ombak makin cepat',sub:'Lepas pola lama, sesuaikan tempo.',rec:'Cara lama belum tentu cocok untuk ritme baru. Leader adaptif cepat melepas kebiasaan lama dan menyesuaikan tempo.'},
+ {n:'Ombak Tak Beraturan',lam:.62,om:2.7,A:.12,h2:.6,msg:'🌀 Ombak tak beraturan!',sub:'Terus amati, tetap lentur.',rec:'Tidak semua perubahan punya pola jelas. Terus mengamati, bergerak lentur, dan tetap tenang adalah kuncinya.'}];
+const cv=$('cv'),cx=cv.getContext('2d');let W=0,H=0,dpr=1;
+function size(){dpr=Math.min(devicePixelRatio||1,2);W=stage.clientWidth;H=stage.clientHeight;cv.width=W*dpr;cv.height=H*dpr;cx.setTransform(dpr,0,0,dpr,0,0)}
+let name='',run=false,held=false,t,ph,cur,y,vy,meter,flowT,totT,wipes,streak,best,inv,last,sp,shake,lastPh;
+$('pn').addEventListener('input',e=>{$('go').disabled=!e.target.value.trim()});
+$('go').onclick=()=>{name=$('pn').value.trim();$('who').textContent='Leader '+name;show('game');fit();reset();$('intro').style.display='flex';draw(0)};
+$('ready').onclick=()=>{$('intro').style.display='none';run=true;last=performance.now();banner(0);requestAnimationFrame(loop)};
+$('again').onclick=()=>{show('game');reset();$('intro').style.display='flex'};
+function reset(){t=0;ph=0;cur={...PH[0]};y=H*.6;vy=0;meter=0;flowT=[0,0,0];totT=[0,0,0];wipes=0;streak=0;best=0;inv=0;sp=[];shake=0;lastPh=-1;$('bar').style.width='0';$('mt').style.width='0';$('tl').textContent=DUR;$('ph').textContent='Fase 1: '+PH[0].n}
+const down=e=>{held=true},up=e=>{held=false};
+['pointerdown','touchstart'].forEach(v=>cv.addEventListener(v,e=>{e.preventDefault();down()},{passive:false}));
+['pointerup','pointercancel','touchend','pointerleave'].forEach(v=>cv.addEventListener(v,up));
+addEventListener('keydown',e=>{if(e.code==='Space'){held=true;e.preventDefault()}});addEventListener('keyup',e=>{if(e.code==='Space')held=false});
+function banner(i){const b=$('bn');b.innerHTML=PH[i].msg+'<small>'+PH[i].sub+'</small>';b.classList.add('show');clearTimeout(banner.h);banner.h=setTimeout(()=>b.classList.remove('show'),2400)}
+let wph=0;
+function wy(x){const L=W*cur.lam*(ph===2?1+.15*Math.sin(t*.9):1),k=6.283*x/L;return H*.55+H*cur.A*(Math.sin(k-wph)+cur.h2*Math.sin(k*2.3-wph*1.7+1))}
+function loop(n){if(!run)return;const dt=Math.min((n-last)/1000,.05);last=n;step(dt);draw(dt);requestAnimationFrame(loop)}
+function step(dt){
+ t+=dt;ph=Math.min(2,Math.floor(t/PD));
+ if(ph!==lastPh){if(lastPh>=0){banner(ph);shake=.7}lastPh=ph;$('ph').textContent='Fase '+(ph+1)+': '+PH[ph].n}
+ const g=PH[ph],r=Math.min(1,dt*1.6);['lam','om','A','h2'].forEach(k=>cur[k]+=(g[k]-cur[k])*r);
+ wph+=cur.om*dt;
+ const a=(held?-1.25:1.25)*H;vy+=a*dt;vy-=vy*1.8*dt;y+=vy*dt;
+ const sx=W*.32,w=wy(sx);if(y<H*.2){y=H*.2;vy=0}if(y>H*.9){y=H*.9;vy=0}
+ const d=(y-w)/H,ok=Math.abs(d)<.05;totT[ph]+=dt;
+ if(inv>0)inv-=dt;
+ if(ok){flowT[ph]+=dt;streak+=dt;best=Math.max(best,streak);meter=Math.max(0,meter-18*dt);if(Math.random()<.6)sp.push({x:sx-W*.04,y:w,vx:-60-Math.random()*80,vy:-40-Math.random()*60,l:.6})}
+ else{streak=0;if(inv<=0)meter=Math.min(100,meter+(Math.abs(d)>.1?34:22)*dt)}
+ $('st').textContent=ok?'Selaras 🌊':(d>0?'Tenggelam! Naik ⬆️':'Terlempar! Turun ⬇️');
+ if(meter>=100){wipes++;meter=30;inv=1.2;shake=.6;y=w;vy=0}
+ $('mt').style.width=meter+'%';$('bar').style.width=(t/DUR*100)+'%';$('tl').textContent=Math.max(0,Math.ceil(DUR-t));
+ if(t>=DUR){run=false;setTimeout(end,500)}
+}
+function draw(dt){
+ const sh=shake>0?(Math.random()-.5)*shake*14:0;shake=Math.max(0,shake-dt*1.5);
+ cx.save();cx.translate(sh,sh);
+ let g=cx.createLinearGradient(0,0,0,H*.6);g.addColorStop(0,'#1b3a6b');g.addColorStop(.55,'#ff8a5c');g.addColorStop(1,'#ffd08a');cx.fillStyle=g;cx.fillRect(-20,-20,W+40,H+40);
+ cx.fillStyle='#fff3c4';cx.shadowColor='#ffb347';cx.shadowBlur=40;cx.beginPath();cx.arc(W*.72,H*.38,W*.1,0,7);cx.fill();cx.shadowBlur=0;
+ const cols=['rgba(18,120,170,.5)','rgba(13,143,184,.65)'];
+ for(let i=0;i<2;i++){cx.fillStyle=cols[i];cx.beginPath();cx.moveTo(0,H);for(let x=0;x<=W;x+=8)cx.lineTo(x,H*(.5+i*.03)+Math.sin(x/W*6.283*(2+i)-wph*(.5+i*.2))*H*.02);cx.lineTo(W,H);cx.fill()}
+ g=cx.createLinearGradient(0,H*.45,0,H);g.addColorStop(0,'#26d6cf');g.addColorStop(.5,'#0d8fb8');g.addColorStop(1,'#06223d');cx.fillStyle=g;cx.beginPath();cx.moveTo(0,H);
+ for(let x=0;x<=W;x+=6)cx.lineTo(x,wy(x));cx.lineTo(W,H);cx.fill();
+ cx.strokeStyle='rgba(255,255,255,.85)';cx.lineWidth=3;cx.beginPath();for(let x=0;x<=W;x+=6)x?cx.lineTo(x,wy(x)):cx.moveTo(x,wy(x));cx.stroke();
+ sp=sp.filter(p=>(p.l-=dt)>0);sp.forEach(p=>{p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=300*dt;cx.fillStyle='rgba(255,255,255,'+(p.l*1.4)+')';cx.beginPath();cx.arc(p.x,p.y,3,0,7);cx.fill()});
+ const sx=W*.32,s1=wy(sx-8),s2=wy(sx+8),ang=Math.atan2(s2-s1,16)*.8;
+ cx.save();cx.translate(sx,y);cx.rotate(ang+(inv>0?Math.sin(t*30)*.2:0));cx.font=(W*.15)+'px serif';cx.textAlign='center';cx.textBaseline='bottom';cx.globalAlpha=inv>0&&Math.floor(t*10)%2?.4:1;cx.fillText('🏄',0,H*.012);cx.restore();
+ cx.fillStyle='rgba(6,34,61,.35)';cx.beginPath();cx.moveTo(0,H);for(let x=0;x<=W;x+=10)cx.lineTo(x,Math.max(wy(x)+H*.07,y>wy(sx)+H*.05&&Math.abs(x-sx)<W*.15?y+H*.01:0));cx.lineTo(W,H);cx.fill();
+ cx.restore();
+}
+function end(){
+ const tf=flowT[0]+flowT[1]+flowT[2],p=Math.round(tf/DUR*100);
+ $('dn').textContent=name;$('sf').textContent=p+'%';$('sw').textContent=wipes;$('ss').textContent=best.toFixed(1)+'s';
+ const r=p>=70?['Peselancar Adaptif','🏄','Anda membaca irama dan bergerak bersama perubahan.']:p>=45?['Mulai Menemukan Irama','🌊','Anda sudah mulai selaras. Sedikit lagi, tinggal lebih cepat membaca perubahan.']:['Masih Melawan Ombak','💪','Ombak terasa berat, wajar. Coba lagi dan fokus pada irama, bukan melawannya.'];
+ $('rk').textContent=r[0];$('tro').textContent=r[1];$('rl').textContent=r[2];
+ let h='<h3>Rangkuman Tiga Fase Perubahan</h3>';
+ PH.forEach((f,i)=>{const q=Math.round(flowT[i]/Math.max(totT[i],.1)*100);h+='<div class="ph"><b><span>Fase '+(i+1)+': '+f.n+'</span><span>'+q+'%</span></b><div class="tr"><i style="width:'+q+'%"></i></div><p>'+f.rec+'</p></div>'});
+ $('rc').innerHTML=h;show('debrief');
+ try{window.parent.postMessage("scoreBarFound","*");}catch(e){}
+ try{window.top.postMessage("scoreBarFound","*");}catch(e){}
+}
+fit();
+</script>
+</body>
+</html>
